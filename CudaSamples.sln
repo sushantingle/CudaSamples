@@ -5,8 +5,6 @@ VisualStudioVersion = 16.0.30011.22
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CudaSamples", "CudaSamples\CudaSamples.vcxproj", "{43FBE74F-7B7A-461C-9E5D-A5636B4195BD}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CudaExecutionModel", "CudaExecutionModel\CudaExecutionModel.vcxproj", "{22DB42E8-6C69-4DCE-BD39-2BE2894F6444}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WarpSample", "WarpSample\WarpSample.vcxproj", "{B4CD56F7-7870-4C46-A118-12C27D16AFE2}"
 EndProject
 Global
@@ -19,10 +17,6 @@ Global
 		{43FBE74F-7B7A-461C-9E5D-A5636B4195BD}.Debug|x64.Build.0 = Debug|x64
 		{43FBE74F-7B7A-461C-9E5D-A5636B4195BD}.Release|x64.ActiveCfg = Release|x64
 		{43FBE74F-7B7A-461C-9E5D-A5636B4195BD}.Release|x64.Build.0 = Release|x64
-		{22DB42E8-6C69-4DCE-BD39-2BE2894F6444}.Debug|x64.ActiveCfg = Debug|x64
-		{22DB42E8-6C69-4DCE-BD39-2BE2894F6444}.Debug|x64.Build.0 = Debug|x64
-		{22DB42E8-6C69-4DCE-BD39-2BE2894F6444}.Release|x64.ActiveCfg = Release|x64
-		{22DB42E8-6C69-4DCE-BD39-2BE2894F6444}.Release|x64.Build.0 = Release|x64
 		{B4CD56F7-7870-4C46-A118-12C27D16AFE2}.Debug|x64.ActiveCfg = Debug|x64
 		{B4CD56F7-7870-4C46-A118-12C27D16AFE2}.Debug|x64.Build.0 = Debug|x64
 		{B4CD56F7-7870-4C46-A118-12C27D16AFE2}.Release|x64.ActiveCfg = Release|x64
