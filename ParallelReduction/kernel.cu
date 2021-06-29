@@ -6,6 +6,78 @@
 #include <cstdlib>
 
 // **********************************************************//
+// Unrolling Technique:
+
+// Manually adding 2 blocks.
+// Elapsed Time : 32.94ms
+__global__ void reduction_unrolling_block2(int* data, int* temp, int size)
+{
+    int tid = threadIdx.x;
+
+    int BLOCK_OFFSET = blockDim.x * blockIdx.x * 2;
+    int index = BLOCK_OFFSET + tid;
+    int* i_data = data + BLOCK_OFFSET;
+
+    if ((index + blockDim.x) < size)
+    {
+        data[index] += data[index + blockDim.x];
+    }
+
+    __syncthreads();
+
+    for (int offset = blockDim.x / 2; offset > 0; offset /= 2)
+    {
+        if (tid < offset)
+        {
+            i_data[tid] += i_data[tid + offset];
+        }
+        __syncthreads();
+    }
+
+    if (tid == 0)
+    {
+        temp[blockIdx.x] = i_data[0];
+    }
+}
+
+// Manually adding 4 blocks.
+// Elapsed Time : 18.15ms
+__global__ void reduction_unrolling_block4(int* data, int* temp, int size)
+{
+    int tid = threadIdx.x;
+
+    int BLOCK_OFFSET = blockDim.x * blockIdx.x * 4;
+    int index = BLOCK_OFFSET + tid;
+    int* i_data = data + BLOCK_OFFSET;
+
+    if ((index + blockDim.x) < size)
+    {
+        int a1 = data[index];
+        int a2 = data[index + blockDim.x];
+        int a3 = data[index + 2 * blockDim.x];
+        int a4 = data[index + 3 * blockDim.x];
+        data[index] = a1 + a2 + a3 + a4;
+    }
+
+    __syncthreads();
+
+    for (int offset = blockDim.x / 2; offset > 0; offset /= 2)
+    {
+        if (tid < offset)
+        {
+            i_data[tid] += i_data[tid + offset];
+        }
+        __syncthreads();
+    }
+
+    if (tid == 0)
+    {
+        temp[blockIdx.x] = i_data[0];
+    }
+}
+// **********************************************************//
+
+// **********************************************************//
 // Neighboured pair reduction has lot of divergence. So, to overcome the divergence, we  will be implementing two approaches.
 // - Force summation of neighbouring approach
 // - Interleaved pair approach
@@ -133,7 +205,11 @@ int main()
 
     // neighboured_pair_reduction << <grid, block >> > (d_input, d_temp, size);
     //neighboured_pair_improved << <grid, block >> > (d_input, d_temp, size);
-    interleaved_pair_reduction << <grid, block >> > (d_input, d_temp, size);
+    // interleaved_pair_reduction << <grid, block >> > (d_input, d_temp, size);
+    /*grid = (size / block.x) / 2;
+    reduction_unrolling_block2 << <grid, block >> > (d_input, d_temp, size);*/
+    grid = (size / block.x) / 4;
+    reduction_unrolling_block4<< <grid, block >> > (d_input, d_temp, size);
     cudaDeviceSynchronize();
 
     cudaMemcpy(h_ref, d_temp, partial_sum_array_size, cudaMemcpyDeviceToHost);
