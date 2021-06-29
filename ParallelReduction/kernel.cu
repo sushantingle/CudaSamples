@@ -8,6 +8,64 @@
 // **********************************************************//
 // Unrolling Technique:
 
+// complete unrolling
+// time : 9.25ms
+__global__ void reduction_complete_unrolling(int* data, int* temp, int size)
+{
+    int tid = threadIdx.x;
+    int BLOCK_OFFSET = blockDim.x * blockIdx.x * 4;
+    int index = BLOCK_OFFSET + tid;
+    int* i_data = data + BLOCK_OFFSET;
+
+    if ((index + blockDim.x) < size)
+    {
+        int a1 = data[index];
+        int a2 = data[index + blockDim.x];
+        int a3 = data[index + 2 * blockDim.x];
+        int a4 = data[index + 3 * blockDim.x];
+        data[index] = a1 + a2 + a3 + a4;
+    }
+    __syncthreads();
+
+    if (blockDim.x >= 1024 && tid < 512)
+    {
+        i_data[tid] += i_data[tid + 512];
+        __syncthreads();
+    }
+
+    if (blockDim.x >= 512 && tid < 256)
+    {
+        i_data[tid] += i_data[tid + 256];
+        __syncthreads();
+    }
+    if (blockDim.x >= 256 && tid < 128)
+    {
+        i_data[tid] += i_data[tid + 128];
+        __syncthreads();
+    }
+    if (blockDim.x >= 128 && tid < 64)
+    {
+        i_data[tid] += i_data[tid + 64];
+        __syncthreads();
+    }
+
+    if (tid < 32)
+    {
+        volatile int* vmem = i_data;
+        vmem[tid] += vmem[tid + 32];
+        vmem[tid] += vmem[tid + 16];
+        vmem[tid] += vmem[tid + 8];
+        vmem[tid] += vmem[tid + 4];
+        vmem[tid] += vmem[tid + 2];
+        vmem[tid] += vmem[tid + 1];
+    }
+
+    if (tid == 0)
+    {
+        temp[blockIdx.x] = i_data[0];
+    }
+}
+
 // warp unrolling
 // time : 9.77ms
 __global__ void reduction_warp_unrolling(int* data, int* temp, int size)
@@ -257,8 +315,11 @@ int main()
     reduction_unrolling_block2 << <grid, block >> > (d_input, d_temp, size);*/
     /*grid = (size / block.x) / 4;
     reduction_unrolling_block4<< <grid, block >> > (d_input, d_temp, size);*/
+    //grid = (size / block.x) / 4;
+    //reduction_warp_unrolling << <grid, block >> > (d_input, d_temp, size);
     grid = (size / block.x) / 4;
-    reduction_warp_unrolling << <grid, block >> > (d_input, d_temp, size);
+    reduction_complete_unrolling << <grid, block >> > (d_input, d_temp, size);
+
     cudaDeviceSynchronize();
 
     cudaMemcpy(h_ref, d_temp, partial_sum_array_size, cudaMemcpyDeviceToHost);
