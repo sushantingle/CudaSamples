@@ -9,41 +9,43 @@
 // Unrolling Technique:
 
 // complete unrolling
-// time : 9.25ms
+// time : 9.25ms without template
+// time : 8.87ms with template
+template<unsigned int block_size>
 __global__ void reduction_complete_unrolling(int* data, int* temp, int size)
 {
     int tid = threadIdx.x;
-    int BLOCK_OFFSET = blockDim.x * blockIdx.x * 4;
+    int BLOCK_OFFSET = block_size * blockIdx.x * 4;
     int index = BLOCK_OFFSET + tid;
     int* i_data = data + BLOCK_OFFSET;
 
-    if ((index + blockDim.x) < size)
+    if ((index + block_size) < size)
     {
         int a1 = data[index];
-        int a2 = data[index + blockDim.x];
-        int a3 = data[index + 2 * blockDim.x];
-        int a4 = data[index + 3 * blockDim.x];
+        int a2 = data[index + block_size];
+        int a3 = data[index + 2 * block_size];
+        int a4 = data[index + 3 * block_size];
         data[index] = a1 + a2 + a3 + a4;
     }
     __syncthreads();
 
-    if (blockDim.x >= 1024 && tid < 512)
+    if (block_size >= 1024 && tid < 512)
     {
         i_data[tid] += i_data[tid + 512];
         __syncthreads();
     }
 
-    if (blockDim.x >= 512 && tid < 256)
+    if (block_size >= 512 && tid < 256)
     {
         i_data[tid] += i_data[tid + 256];
         __syncthreads();
     }
-    if (blockDim.x >= 256 && tid < 128)
+    if (block_size >= 256 && tid < 128)
     {
         i_data[tid] += i_data[tid + 128];
         __syncthreads();
     }
-    if (blockDim.x >= 128 && tid < 64)
+    if (block_size >= 128 && tid < 64)
     {
         i_data[tid] += i_data[tid + 64];
         __syncthreads();
@@ -318,7 +320,7 @@ int main()
     //grid = (size / block.x) / 4;
     //reduction_warp_unrolling << <grid, block >> > (d_input, d_temp, size);
     grid = (size / block.x) / 4;
-    reduction_complete_unrolling << <grid, block >> > (d_input, d_temp, size);
+    reduction_complete_unrolling<128> << <grid, block >> > (d_input, d_temp, size);
 
     cudaDeviceSynchronize();
 
