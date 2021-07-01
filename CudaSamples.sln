@@ -11,6 +11,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ParallelReduction", "Parall
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PinnedMemory", "PinnedMemory\PinnedMemory.vcxproj", "{FC70D1BD-B22D-463D-B292-FBA68964A907}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ZeroCopyMemory", "ZeroCopyMemory\ZeroCopyMemory.vcxproj", "{303ACA70-20B0-427C-832A-D5A473EBDD90}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -33,6 +35,10 @@ Global
 		{FC70D1BD-B22D-463D-B292-FBA68964A907}.Debug|x64.Build.0 = Debug|x64
 		{FC70D1BD-B22D-463D-B292-FBA68964A907}.Release|x64.ActiveCfg = Release|x64
 		{FC70D1BD-B22D-463D-B292-FBA68964A907}.Release|x64.Build.0 = Release|x64
+		{303ACA70-20B0-427C-832A-D5A473EBDD90}.Debug|x64.ActiveCfg = Debug|x64
+		{303ACA70-20B0-427C-832A-D5A473EBDD90}.Debug|x64.Build.0 = Debug|x64
+		{303ACA70-20B0-427C-832A-D5A473EBDD90}.Release|x64.ActiveCfg = Release|x64
+		{303ACA70-20B0-427C-832A-D5A473EBDD90}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
