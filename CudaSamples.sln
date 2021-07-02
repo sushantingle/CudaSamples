@@ -15,6 +15,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ZeroCopyMemory", "ZeroCopyM
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UnifiedMemory", "UnifiedMemory\UnifiedMemory.vcxproj", "{E36BECEC-B00A-4ADC-850E-825212F02C5D}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MemoryAccessPattern", "MemoryAccessPattern\MemoryAccessPattern.vcxproj", "{7293F16D-B940-41F3-BE84-7796CA732190}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -45,6 +47,10 @@ Global
 		{E36BECEC-B00A-4ADC-850E-825212F02C5D}.Debug|x64.Build.0 = Debug|x64
 		{E36BECEC-B00A-4ADC-850E-825212F02C5D}.Release|x64.ActiveCfg = Release|x64
 		{E36BECEC-B00A-4ADC-850E-825212F02C5D}.Release|x64.Build.0 = Release|x64
+		{7293F16D-B940-41F3-BE84-7796CA732190}.Debug|x64.ActiveCfg = Debug|x64
+		{7293F16D-B940-41F3-BE84-7796CA732190}.Debug|x64.Build.0 = Debug|x64
+		{7293F16D-B940-41F3-BE84-7796CA732190}.Release|x64.ActiveCfg = Release|x64
+		{7293F16D-B940-41F3-BE84-7796CA732190}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
