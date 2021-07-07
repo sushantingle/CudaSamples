@@ -5,6 +5,117 @@
 #include <stdio.h>
 #include <cstdlib>
 
+// warp shuffle
+template<unsigned int block_size>
+__global__ void reduction_smem_warp_shuffle(int* data, int* temp, int size)
+{
+    int tid = threadIdx.x;
+    int BLOCK_OFFSET = block_size * blockIdx.x;
+    int* i_data = data + BLOCK_OFFSET;
+
+    __shared__ int smem[block_size];
+
+    smem[tid] = i_data[tid];
+    __syncthreads();
+
+    if (block_size >= 1024 && tid < 512)
+    {
+        smem[tid] += smem[tid + 512];
+        __syncthreads();
+    }
+
+    if (block_size >= 512 && tid < 256)
+    {
+        smem[tid] += smem[tid + 256];
+        __syncthreads();
+    }
+    if (block_size >= 256 && tid < 128)
+    {
+        smem[tid] += smem[tid + 128];
+        __syncthreads();
+    }
+    if (block_size >= 128 && tid < 64)
+    {
+        smem[tid] += smem[tid + 64];
+        __syncthreads();
+    }
+
+    if (block_size >= 64 && tid < 32)
+    {
+        smem[tid] += smem[tid + 32];
+        __syncthreads();
+    }
+
+    int local_sum = smem[tid];
+    if (tid < 32)
+    {
+        local_sum += __shfl_down_sync(0xFF, local_sum, 16);
+        local_sum += __shfl_down_sync(0xFF, local_sum, 8);
+        local_sum += __shfl_down_sync(0xFF, local_sum, 4);
+        local_sum += __shfl_down_sync(0xFF, local_sum, 2);
+        local_sum += __shfl_down_sync(0xFF, local_sum, 1);
+    }
+
+    if (tid == 0)
+    {
+        temp[blockIdx.x] = local_sum;
+    }
+}
+
+// Shared memory
+
+template<unsigned int block_size>
+__global__ void reduction_shared_memory(int* data, int* temp, int size)
+{
+    int tid = threadIdx.x;
+    int BLOCK_OFFSET = block_size * blockIdx.x;
+    int* i_data = data + BLOCK_OFFSET;
+
+    __shared__ int smem[block_size];
+
+    smem[tid] = i_data[tid];
+    __syncthreads();
+
+    if (block_size >= 1024 && tid < 512)
+    {
+        smem[tid] += smem[tid + 512];
+        __syncthreads();
+    }
+
+    if (block_size >= 512 && tid < 256)
+    {
+        smem[tid] += smem[tid + 256];
+        __syncthreads();
+    }
+    if (block_size >= 256 && tid < 128)
+    {
+        smem[tid] += smem[tid + 128];
+        __syncthreads();
+    }
+    if (block_size >= 128 && tid < 64)
+    {
+        smem[tid] += smem[tid + 64];
+        __syncthreads();
+    }
+
+    if (tid < 32)
+    {
+        volatile int* vmem = smem;
+        vmem[tid] += vmem[tid + 32];
+        vmem[tid] += vmem[tid + 16];
+        vmem[tid] += vmem[tid + 8];
+        vmem[tid] += vmem[tid + 4];
+        vmem[tid] += vmem[tid + 2];
+        vmem[tid] += vmem[tid + 1];
+    }
+
+    if (tid == 0)
+    {
+        temp[blockIdx.x] = i_data[0];
+    }
+}
+
+
 // **********************************************************//
 // Unrolling Technique:
 
@@ -319,9 +430,10 @@ int main()
     reduction_unrolling_block4<< <grid, block >> > (d_input, d_temp, size);*/
     //grid = (size / block.x) / 4;
     //reduction_warp_unrolling << <grid, block >> > (d_input, d_temp, size);
-    grid = (size / block.x) / 4;
-    reduction_complete_unrolling<128> << <grid, block >> > (d_input, d_temp, size);
-
+    //grid = (size / block.x) / 4;
+    //reduction_complete_unrolling<1024> << <grid, block >> > (d_input, d_temp, size);
+    reduction_shared_memory<128> << <grid, block >> > (d_input, d_temp, size);
+    //reduction_smem_warp_shuffle<128> << <grid, block >> > (d_input, d_temp, size);
     cudaDeviceSynchronize();
 
     cudaMemcpy(h_ref, d_temp, partial_sum_array_size, cudaMemcpyDeviceToHost);

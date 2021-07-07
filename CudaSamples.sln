@@ -17,6 +17,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UnifiedMemory", "UnifiedMem
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MemoryAccessPattern", "MemoryAccessPattern\MemoryAccessPattern.vcxproj", "{7293F16D-B940-41F3-BE84-7796CA732190}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MatrixTranspose", "MatrixTranspose\MatrixTranspose.vcxproj", "{FD2259D8-1AD9-4E30-AF61-BEAC9798CD73}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SharedMemoryAccess", "SharedMemoryAccess\SharedMemoryAccess.vcxproj", "{97BA44D5-CDB3-401F-817C-425915E90F24}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -51,6 +55,14 @@ Global
 		{7293F16D-B940-41F3-BE84-7796CA732190}.Debug|x64.Build.0 = Debug|x64
 		{7293F16D-B940-41F3-BE84-7796CA732190}.Release|x64.ActiveCfg = Release|x64
 		{7293F16D-B940-41F3-BE84-7796CA732190}.Release|x64.Build.0 = Release|x64
+		{FD2259D8-1AD9-4E30-AF61-BEAC9798CD73}.Debug|x64.ActiveCfg = Debug|x64
+		{FD2259D8-1AD9-4E30-AF61-BEAC9798CD73}.Debug|x64.Build.0 = Debug|x64
+		{FD2259D8-1AD9-4E30-AF61-BEAC9798CD73}.Release|x64.ActiveCfg = Release|x64
+		{FD2259D8-1AD9-4E30-AF61-BEAC9798CD73}.Release|x64.Build.0 = Release|x64
+		{97BA44D5-CDB3-401F-817C-425915E90F24}.Debug|x64.ActiveCfg = Debug|x64
+		{97BA44D5-CDB3-401F-817C-425915E90F24}.Debug|x64.Build.0 = Debug|x64
+		{97BA44D5-CDB3-401F-817C-425915E90F24}.Release|x64.ActiveCfg = Release|x64
+		{97BA44D5-CDB3-401F-817C-425915E90F24}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
